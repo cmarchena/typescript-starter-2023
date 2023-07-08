@@ -1,4 +1,3 @@
 {
-    "jest.rootPath": "/",
-    "jest.jestCommandLine": "\"npm run jest\""
+    "jest.rootPath": "/"
 }
