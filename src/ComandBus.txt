@@ -1,0 +1,105 @@
+/* 
+// Define the RegisterUserCommand
+const createRegisterUserCommand = (username, password, email) => ({
+  type: 'RegisterUser',
+  username,
+  password,
+  email,
+});
+
+// Define the handler for the RegisterUserCommand
+const createRegisterUserHandler = (userRepository) => async (command) => {
+  // Validate command data (you can add more validation logic)
+  if (!command.username || !command.password || !command.email) {
+    throw new Error('Invalid command parameters');
+  }
+
+  // Check if the username or email is already registered
+  const existingUser = await userRepository.findByUsernameOrEmail(command.username, command.email);
+  if (existingUser) {
+    throw new Error('Username or email already registered');
+  }
+
+  // Create a new user entity and save it to the repository
+  const newUser = {
+    username: command.username,
+    password: command.password, // Note: In practice, hash the password before saving
+    email: command.email,
+    // Add other user properties as needed
+  };
+
+  await userRepository.save(newUser);
+
+  // Emit an event or return a response if needed
+
+  return { success: true };
+};
+
+// Example of using the CommandBus to handle the RegisterUserCommand
+const userRepository = require('your-user-repository-library'); // Replace with your user repository implementation
+
+const registerUserHandler = createRegisterUserHandler(userRepository);
+CommandBus.registerHandler('RegisterUser', registerUserHandler);
+
+// Usage example
+const registerUserCommand = createRegisterUserCommand('john_doe', 'password123', 'john@example.com');
+try {
+  const result = await CommandBus.handle(registerUserCommand);
+  console.log(result); // Output: { success: true }
+} catch (error) {
+  console.error(error.message);
+}
+
+
+// Define a Command Bus
+interface Command {
+    type: string;
+  }
+  
+  interface CommandHandler<T extends Command, U> {
+    (command: T): Promise<U>;
+  }
+  
+  interface CommandBus {
+    registerHandler<T extends Command, U>(commandType: string, handler: CommandHandler<T, U>): void;
+    handle<T extends Command, U>(command: T): Promise<U>;
+  }
+  
+  const createCommandBus = (): CommandBus => {
+    const handlers: Record<string, CommandHandler<Command, any>> = {};
+  
+    const registerHandler = <T extends Command, U>(commandType: string, handler: CommandHandler<T, U>): void => {
+      handlers[commandType] = handler;
+    };
+  
+    const handle = async <T extends Command, U>(command: T): Promise<U> => {
+      const handler = handlers[command.type];
+  
+      if (!handler) {
+        throw new Error(`No handler registered for command type: ${command.type}`);
+      }
+  
+      return handler(command);
+    };
+  
+    return {
+      registerHandler,
+      handle,
+    };
+  };
+  
+  // Usage example
+  const commandBus: CommandBus = createCommandBus();
+  
+  // Registering the 'RegisterUser' command handler
+  commandBus.registerHandler('RegisterUser', createRegisterUserHandler(userRepository));
+  
+  // Creating and handling the 'RegisterUser' command
+  const registerUserCommand = createRegisterUserCommand('john_doe', 'password123', 'john@example.com');
+  try {
+    const result = await commandBus.handle(registerUserCommand);
+    console.log(result); // Output: { success: true }
+  } catch (error) {
+    console.error(error.message);
+  }
+   */
